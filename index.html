@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>guziki front</title>
+  <style>
+    body {
+      background: #2c2c2c;
+      color: #ddd;
+      font-family: sans-serif;
+      margin: 0;
+      padding: 20px;
+    }
+    h3 { color: #ccc; }
+    .tab {
+      display: inline-block;
+      margin: 5px;
+      padding: 6px 10px;
+      border: 1px solid #555;
+      border-radius: 4px;
+      cursor: pointer;
+      background: #444;
+      color: #ddd;
+    }
+    .tab:hover { background: #555; }
+    .btn {
+      display: inline-block;
+      width: 220px;
+      margin: 10px;
+      padding: 12px 10px;
+      background: #333;
+      border-radius: 8px;
+      border: 1px solid #555;
+      box-shadow: 2px 2px 5px rgba(0,0,0,0.4);
+      transition: transform 0.2s, box-shadow 0.2s;
+      text-align: center;
+      position: relative;
+    }
+    .btn:hover {
+      transform: scale(1.03);
+      box-shadow: 2px 2px 8px rgba(0,0,0,0.6);
+    }
+    .btn .btn-id {
+      font-weight: bold;
+      font-size: 16px;
+      margin-bottom: 8px;
+      border-bottom: 1px solid #666;
+      padding-bottom: 4px;
+    }
+    .btn .btn-params {
+      font-size: 14px;
+      color: #ddd;
+      margin: 6px 0;
+    }
+    .battery {
+      width: 40px;
+      height: 20px;
+      border: 2px solid #ddd;
+      border-radius: 4px;
+      position: relative;
+      margin: 8px auto 0;
+    }
+    .battery::after {
+      content: '';
+      position: absolute;
+      top: 3px;
+      right: -6px;
+      width: 4px;
+      height: 14px;
+      background: #ddd;
+      border-radius: 2px;
+    }
+    .battery-level {
+      height: 100%;
+      background: #76c043;
+      border-radius: 2px 0 0 2px;
+    }
+    .flash-active {
+      animation: flashActive 0.5s forwards;
+    }
+    @keyframes flashActive {
+      0% { border: 2px solid red; }
+      100% { border: none; }
+    }
+    .flash-timeouted {
+      animation: flashTimeouted 0.5s forwards;
+    }
+    @keyframes flashTimeouted {
+      0% { border: 2px solid yellow; }
+      100% { border: none; }
+    }
+    .blue {
+      background: #3498db !important;
+      color: white !important;
+    }
+    .table-item {
+      display: inline-block;
+      width: 220px;
+      margin: 10px;
+      padding: 12px 10px;
+      background: #333;
+      border-radius: 8px;
+      border: 1px solid #555;
+      box-shadow: 2px 2px 5px rgba(0,0,0,0.4);
+      text-align: center;
+      position: relative;
+      font-family: sans-serif;
+    }
+    .table-item .table-id {
+      font-weight: bold;
+      font-size: 16px;
+      margin-bottom: 8px;
+      border-bottom: 1px solid #666;
+      padding-bottom: 4px;
+    }
+    .table-item .table-stats {
+      font-size: 14px;
+      color: #ddd;
+      margin: 6px 0;
+    }
+    .active-pulse {
+      animation: activePulse 1s infinite;
+    }
+    @keyframes activePulse {
+      0% { background-color: #ff0000; box-shadow: 0 0 5px 2px rgba(255,0,0,0.5); }
+      50% { background-color: #cc0000; box-shadow: 0 0 20px 4px rgba(255,0,0,1); }
+      100% { background-color: #ff0000; box-shadow: 0 0 5px 2px rgba(255,0,0,0.5); }
+    }
+    .table-blue {
+      background: #3498db !important;
+      color: white !important;
+    }
+    .table-yellow {
+      background: #f1c40f !important;
+      color: white !important;
+    }
+    #login-panel {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.85);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      flex-direction: column;
+    }
+    #login-panel input {
+      padding: 8px;
+      margin: 5px;
+      width: 200px;
+      border-radius: 4px;
+      border: none;
+    }
+    #login-panel button {
+      padding: 8px 16px;
+      margin: 5px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      background: #3498db;
+      color: white;
+      font-size: 16px;
+    }
+    #logout-btn {
+      position: fixed;
+      top: 10px;
+      right: 10px;
+      padding: 8px 12px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      background: #e74c3c;
+      color: white;
+      z-index: 1100;
+    }
+  </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.js"></script>
+</head>
+<body>
+  <div id="login-panel" style="display:none;">
+    <h3>LWaiter Service Panel</h3>
+    <input type="text" id="login-username" placeholder="Username" />
+    <input type="password" id="login-password" placeholder="Password" />
+    <button id="login-btn">Login</button>
+  </div>
+  <button id="logout-btn" style="display:none;">Logout</button>
+  <h3>Terminals</h3>
+  <div id="tabs"></div>
+  <hr />
+  <h3>Buttons</h3>
+  <div id="buttons"></div>
+  <hr />
+  <h3>Tables</h3>
+  <div id="tables"></div>
+  <script>
+    class Terminal {
+      constructor(id) {
+        this.id = id;
+        this.buttons = {};
+        this.tables = {};
+      }
+      updateParam(btnId, param, value) {
+        if (!this.buttons[btnId]) {
+          this.buttons[btnId] = { state: 'inactive', params: {} };
+        }
+        this.buttons[btnId].params[param] = value;
+        this.buttons[btnId].stateTime = Date.now();
+      }
+      updateState(btnId, state) {
+        if (!this.buttons[btnId]) {
+          this.buttons[btnId] = { state: state.toLowerCase(), params: {} };
+        } else {
+          this.buttons[btnId].state = state.toLowerCase();
+        }
+        this.buttons[btnId].stateTime = Date.now();
+      }
+      updateTable(tblId, state) {
+        if (!this.tables[tblId]) {
+          this.tables[tblId] = { state: state.toLowerCase(), count: 0, lastChange: new Date() };
+        }
+        this.tables[tblId].state = state.toLowerCase();
+        this.tables[tblId].lastChange = new Date();
+        if (state.toLowerCase() === "active") {
+          this.tables[tblId].count = (this.tables[tblId].count || 0) + 1;
+        }
+      }
+    }
+    class MqttApp {
+      constructor(host, port, clientId, username, password) {
+        this.host = host;
+        this.port = port;
+        this.clientId = clientId;
+        this.username = username;
+        this.password = password;
+        this.client = new Paho.MQTT.Client(this.host, Number(this.port), this.clientId);
+        this.terminals = {};
+        this.activeTerminal = null;
+      }
+      connect() {
+        console.log("Attempting connection with username:", this.username);
+        this.client.connect({
+          onSuccess: () => this.onConnect(),
+          onFailure: (err) => {
+            console.log("Connection failed:", err);
+            localStorage.removeItem("mqtt_username");
+            localStorage.removeItem("mqtt_password");
+            document.getElementById("login-panel").style.display = "flex";
+          },
+          userName: this.username,
+          password: this.password,
+          useSSL: false
+        });
+        this.client.onMessageArrived = (msg) => this.onMessageArrived(msg);
+      }
+      onConnect() {
+        console.log("Connected successfully to broker.");
+        localStorage.setItem("mqtt_username", this.username);
+        localStorage.setItem("mqtt_password", this.password);
+        document.getElementById("login-panel").style.display = "none";
+        document.getElementById("logout-btn").style.display = "block";
+        this.client.subscribe("lw/#");
+      }
+      onMessageArrived(message) {
+        const parts = message.destinationName.split("/");
+        if (parts[0] === "lw") {
+          let terminalId = parts[1];
+          if (!this.terminals[terminalId]) {
+            this.terminals[terminalId] = new Terminal(terminalId);
+            if (!this.activeTerminal) { this.activeTerminal = terminalId; }
+            this.renderTabs();
+          }
+          if (parts[2] === "btn_param") {
+            let btnId = parts[3];
+            let paramName = parts[4];
+            let val = parseFloat(message.payloadString);
+            if (paramName.toLowerCase().includes("volt") || paramName.toLowerCase().includes("napięcie")) {
+              val = (val / 1000).toFixed(2) + " V";
+            } else if (paramName.toLowerCase().includes("temp")) {
+              val = (val / 10).toFixed(1) + " °C";
+            }
+            this.terminals[terminalId].updateParam(btnId, paramName, val);
+          } else if (parts[2] === "btn_state") {
+            let btnId = parts[3];
+            this.terminals[terminalId].updateState(btnId, message.payloadString);
+          } else if (parts[2] === "tbl_state") {
+            let tblId = parts[3];
+            this.terminals[terminalId].updateTable(tblId, message.payloadString);
+          }
+        }
+        this.renderButtons();
+        this.renderTables();
+      }
+      renderTabs() {
+        const tabsDiv = document.getElementById("tabs");
+        tabsDiv.innerHTML = "";
+        for (let tid in this.terminals) {
+          const tab = document.createElement("div");
+          tab.className = "tab";
+          tab.textContent = tid;
+          tab.onclick = () => {
+            this.activeTerminal = tid;
+            this.renderButtons();
+            this.renderTables();
+          };
+          tabsDiv.appendChild(tab);
+        }
+      }
+      renderButtons() {
+        const buttonsDiv = document.getElementById("buttons");
+        buttonsDiv.innerHTML = "";
+        if (!this.activeTerminal) { return; }
+        const terminal = this.terminals[this.activeTerminal];
+        for (let btnId in terminal.buttons) {
+          let btnData = terminal.buttons[btnId];
+          let btn = document.createElement("div");
+          btn.className = "btn";
+          let state = btnData.state;
+          let now = Date.now();
+          let elapsed = now - (btnData.stateTime || now);
+          if (state === "active" && elapsed < 500) {
+            btn.classList.add("flash-active");
+          } else if (state === "timeouted" && elapsed < 500) {
+            btn.classList.add("flash-timeouted");
+          } else {
+            btn.classList.add("blue");
+          }
+          let header = document.createElement("div");
+          header.className = "btn-id";
+          header.textContent = `ID: ${btnId}`;
+          btn.appendChild(header);
+          let paramsDiv = document.createElement("div");
+          paramsDiv.className = "btn-params";
+          paramsDiv.textContent = Object.entries(btnData.params).map(([k, v]) => `${k}: ${v}`).join(" | ");
+          btn.appendChild(paramsDiv);
+          if (btnData.params.hasOwnProperty("volt")) {
+            let voltStr = btnData.params["volt"];
+            let voltVal = parseFloat(voltStr);
+            let percentage = Math.min(Math.max((voltVal - 2.4) / (3 - 2.4) * 100, 0), 100);
+            let batteryDiv = document.createElement("div");
+            batteryDiv.className = "battery";
+            let batteryLevel = document.createElement("div");
+            batteryLevel.className = "battery-level";
+            batteryLevel.style.width = percentage + "%";
+            batteryDiv.appendChild(batteryLevel);
+            btn.appendChild(batteryDiv);
+          }
+          buttonsDiv.appendChild(btn);
+        }
+      }
+      renderTables() {
+        const tablesDiv = document.getElementById("tables");
+        tablesDiv.innerHTML = "";
+        if (!this.activeTerminal) { return; }
+        const terminal = this.terminals[this.activeTerminal];
+        for (let tblId in terminal.tables) {
+          let tblData = terminal.tables[tblId];
+          let tbl = document.createElement("div");
+          tbl.className = "table-item";
+          let state = tblData.state;
+          if (state === "active") {
+            tbl.classList.add("active-pulse");
+          } else if (state === "timeouted") {
+            tbl.classList.add("table-yellow");
+          } else {
+            tbl.classList.add("table-blue");
+          }
+          let header = document.createElement("div");
+          header.className = "table-id";
+          header.textContent = `ID: ${tblId}`;
+          tbl.appendChild(header);
+          let statsDiv = document.createElement("div");
+          statsDiv.className = "table-stats";
+          let lastChange = tblData.lastChange.toLocaleTimeString();
+          statsDiv.textContent = `Active count: ${tblData.count} | Last change: ${lastChange}`;
+          tbl.appendChild(statsDiv);
+          tablesDiv.appendChild(tbl);
+        }
+      }
+    }
+    function initApp() {
+      let storedUsername = localStorage.getItem("mqtt_username");
+      let storedPassword = localStorage.getItem("mqtt_password");
+      if (storedUsername && storedPassword) {
+        document.getElementById("login-panel").style.display = "none";
+        document.getElementById("logout-btn").style.display = "block";
+        const app = new MqttApp("95.160.132.121", 9001, "client_" + Math.random(), storedUsername, storedPassword);
+        app.connect();
+        window.mqttApp = app;
+      } else {
+        document.getElementById("login-panel").style.display = "flex";
+      }
+    }
+    document.getElementById("login-btn").addEventListener("click", function() {
+      let username = document.getElementById("login-username").value.trim();
+      let password = document.getElementById("login-password").value.trim();
+      if (!username || !password) {
+        alert("Enter valid credentials!");
+        return;
+      }
+      console.log("Login attempt with username:", username);
+      const app = new MqttApp("95.160.132.121", 9001, "client_" + Math.random(), username, password);
+      app.connect();
+      window.mqttApp = app;
+    });
+    document.getElementById("logout-btn").addEventListener("click", function() {
+      localStorage.removeItem("mqtt_username");
+      localStorage.removeItem("mqtt_password");
+      location.reload();
+    });
+    window.onload = initApp;
+  </script>
+</body>
+</html>
