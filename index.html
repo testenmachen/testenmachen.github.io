@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <title>guziki front</title>
@@ -11,7 +12,11 @@
       margin: 0;
       padding: 20px;
     }
-    h3 { color: #ccc; }
+
+    h3 {
+      color: #ccc;
+    }
+
     .tab {
       display: inline-block;
       margin: 5px;
@@ -22,7 +27,11 @@
       background: #444;
       color: #ddd;
     }
-    .tab:hover { background: #555; }
+
+    .tab:hover {
+      background: #555;
+    }
+
     .btn {
       display: inline-block;
       width: 220px;
@@ -31,15 +40,17 @@
       background: #333;
       border-radius: 8px;
       border: 1px solid #555;
-      box-shadow: 2px 2px 5px rgba(0,0,0,0.4);
+      box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.4);
       transition: transform 0.2s, box-shadow 0.2s;
       text-align: center;
       position: relative;
     }
+
     .btn:hover {
       transform: scale(1.03);
-      box-shadow: 2px 2px 8px rgba(0,0,0,0.6);
+      box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.6);
     }
+
     .btn .btn-id {
       font-weight: bold;
       font-size: 16px;
@@ -47,11 +58,13 @@
       border-bottom: 1px solid #666;
       padding-bottom: 4px;
     }
+
     .btn .btn-params {
       font-size: 14px;
       color: #ddd;
       margin: 6px 0;
     }
+
     .battery {
       width: 40px;
       height: 20px;
@@ -60,6 +73,7 @@
       position: relative;
       margin: 8px auto 0;
     }
+
     .battery::after {
       content: '';
       position: absolute;
@@ -70,29 +84,46 @@
       background: #ddd;
       border-radius: 2px;
     }
+
     .battery-level {
       height: 100%;
       background: #76c043;
       border-radius: 2px 0 0 2px;
     }
+
     .flash-active {
       animation: flashActive 0.5s forwards;
     }
+
     @keyframes flashActive {
-      0% { border: 2px solid red; }
-      100% { border: none; }
+      0% {
+        border: 2px solid red;
+      }
+
+      100% {
+        border: none;
+      }
     }
+
     .flash-timeouted {
       animation: flashTimeouted 0.5s forwards;
     }
+
     @keyframes flashTimeouted {
-      0% { border: 2px solid yellow; }
-      100% { border: none; }
+      0% {
+        border: 2px solid yellow;
+      }
+
+      100% {
+        border: none;
+      }
     }
+
     .blue {
       background: #3498db !important;
       color: white !important;
     }
+
     .table-item {
       display: inline-block;
       width: 220px;
@@ -101,11 +132,12 @@
       background: #333;
       border-radius: 8px;
       border: 1px solid #555;
-      box-shadow: 2px 2px 5px rgba(0,0,0,0.4);
+      box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.4);
       text-align: center;
       position: relative;
       font-family: sans-serif;
     }
+
     .table-item .table-id {
       font-weight: bold;
       font-size: 16px;
@@ -113,30 +145,50 @@
       border-bottom: 1px solid #666;
       padding-bottom: 4px;
     }
+
     .table-item .table-stats {
       font-size: 14px;
       color: #ddd;
       margin: 6px 0;
     }
+
     .active-pulse {
       animation: activePulse 1s infinite;
     }
+
     @keyframes activePulse {
-      0% { background-color: #ff0000; box-shadow: 0 0 5px 2px rgba(255,0,0,0.5); }
-      50% { background-color: #cc0000; box-shadow: 0 0 20px 4px rgba(255,0,0,1); }
-      100% { background-color: #ff0000; box-shadow: 0 0 5px 2px rgba(255,0,0,0.5); }
+      0% {
+        background-color: #ff0000;
+        box-shadow: 0 0 5px 2px rgba(255, 0, 0, 0.5);
+      }
+
+      50% {
+        background-color: #cc0000;
+        box-shadow: 0 0 20px 4px rgba(255, 0, 0, 1);
+      }
+
+      100% {
+        background-color: #ff0000;
+        box-shadow: 0 0 5px 2px rgba(255, 0, 0, 0.5);
+      }
     }
+
     .table-blue {
       background: #3498db !important;
       color: white !important;
     }
+
     .table-yellow {
       background: #f1c40f !important;
       color: white !important;
     }
+
     #login-panel {
       position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
       background: rgba(0, 0, 0, 0.85);
       display: flex;
       justify-content: center;
@@ -144,6 +196,7 @@
       z-index: 1000;
       flex-direction: column;
     }
+
     #login-panel input {
       padding: 8px;
       margin: 5px;
@@ -151,6 +204,7 @@
       border-radius: 4px;
       border: none;
     }
+
     #login-panel button {
       padding: 8px 16px;
       margin: 5px;
@@ -161,6 +215,7 @@
       color: white;
       font-size: 16px;
     }
+
     #logout-btn {
       position: fixed;
       top: 10px;
@@ -173,9 +228,71 @@
       color: white;
       z-index: 1100;
     }
+
+
+    /* OTA Status Cards Grid */
+    #ota-status-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+      margin-top: 16px;
+    }
+
+    /* Każdy widget urządzenia */
+    .ota-item {
+      background: #3a3a3a;
+      padding: 16px;
+      border-radius: 12px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+      color: #eee;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Nagłówek z ID */
+    .ota-item .ota-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 12px;
+      border-bottom: 1px solid #555;
+      padding-bottom: 6px;
+    }
+
+    /* Stylowany progress bar */
+    .ota-item .ota-progress {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 14px;
+      border-radius: 7px;
+      background: #555;
+      overflow: hidden;
+      margin-bottom: 8px;
+    }
+
+    .ota-item .ota-progress::-webkit-progress-bar {
+      background: #444;
+    }
+
+    .ota-item .ota-progress::-webkit-progress-value {
+      background: linear-gradient(90deg, #195a96, #19968f);
+    }
+
+    .ota-item .ota-progress::-moz-progress-bar {
+      background: linear-gradient(90deg, #195a96, #19968f);
+    }
+
+    /* Tekst statusu */
+    .ota-item .ota-status-text {
+      font-size: 0.9rem;
+      text-align: right;
+      color: #aaa;
+    }
   </style>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.js"></script>
+  <script src="lwaiter_ota.js"></script>
 </head>
+
 <body>
   <div id="login-panel" style="display:none;">
     <h3>LWaiter Service Panel</h3>
@@ -192,7 +309,19 @@
   <hr />
   <h3>Tables</h3>
   <div id="tables"></div>
+
+  <div id="ota-panel" style="display:none; padding:20px; background:#333; border-radius:8px;">
+    <h3>OTA Update</h3>
+    <div id="ota-device-list"></div>
+    <label>FW-ver: <input type="number" id="ota-fw-version" value="1" /></label>
+    <label> Plik .bin: <input type="file" id="ota-file" accept=".bin" /></label>
+    <button id="ota-start-btn">Start OTA</button>
+    <div id="ota-status-container"></div>
+    <pre id="ota-log" style="max-height:200px;overflow:auto;"></pre>
+  </div>
+
   <script>
+
     class Terminal {
       constructor(id) {
         this.id = id;
@@ -235,7 +364,74 @@
         this.client = new Paho.MQTT.Client(this.host, Number(this.port), this.clientId);
         this.terminals = {};
         this.activeTerminal = null;
+
+        this._queuedSubs = [];
+
+        this.subscribe = (topic, handler) => {
+          this.client.subscribe(topic);
+          // chain OTA handler before the generic one
+          const prev = this.client.onMessageArrived;
+          this.client.onMessageArrived = msg => {
+            if (msg.destinationName.match('^' + topic.replace('+', '[^/]+').replace('#', '.+'))) {
+              handler(msg.destinationName, msg.payloadBytes);
+            }
+            prev && prev(msg);
+          };
+        };
       }
+
+      onOtaStatus(deviceId, errorCode, progress) {
+        console.log("onOtaStatus " + deviceId + " " + errorCode + " " + progress);
+        const container = document.getElementById('ota-status-container');
+
+        let wrap = document.getElementById(`ota-${deviceId}`);
+        if (!wrap) {
+          // ... w miejscu wrap = document.createElement('div');
+          wrap = document.createElement('div');
+          wrap.id = `ota-${deviceId}`;
+          wrap.className = 'ota-item';
+
+          // title
+          const title = document.createElement('div');
+          title.className = 'ota-title';
+          title.textContent = `Device: ${deviceId}`;
+          wrap.appendChild(title);
+
+          // progress
+          const bar = document.createElement('progress');
+          bar.id = `ota-${deviceId}-bar`;
+          bar.className = 'ota-progress';
+          bar.max = 100;
+          bar.value = progress;
+          wrap.appendChild(bar);
+
+          // status
+          const status = document.createElement('div');
+          status.id = `ota-${deviceId}-status`;
+          status.className = 'ota-status-text';
+          status.textContent = errorCode;
+          wrap.appendChild(status);
+
+          container.appendChild(wrap);
+        } else {
+          document.getElementById(`ota-${deviceId}-bar`).value = progress;
+          document.getElementById(`ota-${deviceId}-status`).textContent = errorCode;
+        }
+      }
+
+      publish(topic, payload) {
+        // const bytes = new Uint8Array(payload);
+        // const hex = Array.from(bytes)
+        //   .map(b => b.toString(16).padStart(2, '0'))
+        //   .join(' ');
+        // console.log(`PUB → ${topic}: ${hex}`);
+
+        const msg = new Paho.MQTT.Message(payload);
+        msg.destinationName = topic;
+
+        this.client.send(msg);
+      }
+
       connect() {
         console.log("Attempting connection with username:", this.username);
         this.client.connect({
@@ -259,6 +455,7 @@
         document.getElementById("login-panel").style.display = "none";
         document.getElementById("logout-btn").style.display = "block";
         this.client.subscribe("lw/#");
+        window.otaProt.onConnect();
       }
       onMessageArrived(message) {
         const parts = message.destinationName.split("/");
@@ -304,7 +501,14 @@
           };
           tabsDiv.appendChild(tab);
         }
+
+        const otaTab = document.createElement("div");
+        otaTab.className = "tab"; otaTab.textContent = "OTA";
+        otaTab.onclick = () => { this.activeTerminal = null; showOtaPanel(); };
+        tabsDiv.appendChild(otaTab);
+
       }
+
       renderButtons() {
         const buttonsDiv = document.getElementById("buttons");
         buttonsDiv.innerHTML = "";
@@ -377,20 +581,45 @@
         }
       }
     }
+
     function initApp() {
+
+      console.log("mqtt app init");
+
       let storedUsername = localStorage.getItem("mqtt_username");
       let storedPassword = localStorage.getItem("mqtt_password");
       if (storedUsername && storedPassword) {
         document.getElementById("login-panel").style.display = "none";
         document.getElementById("logout-btn").style.display = "block";
         const app = new MqttApp("95.160.132.121", 9001, "client_" + Math.random(), storedUsername, storedPassword);
+        console.log("mqtt app connect...");
         app.connect();
+        console.log("mqtt app a connect");
         window.mqttApp = app;
+
+        // OTA
+        console.log("mqtt app allocating COtaProtocol");
+        const ota = new COtaProtocol(app, {
+          onLog: m => {
+            const lg = document.getElementById('ota-log');
+            lg.textContent += m + '\n';
+            lg.scrollTop = lg.scrollHeight;
+          },
+          statusCb: (deviceId, errMsg, progress) => {
+            app.onOtaStatus(deviceId, errMsg, progress);
+          }
+        });
+        console.log("after alloc");
+
+        window.otaProt = ota;
+        console.log("ota prod attached to the window container");
+
       } else {
         document.getElementById("login-panel").style.display = "flex";
       }
     }
-    document.getElementById("login-btn").addEventListener("click", function() {
+
+    document.getElementById("login-btn").addEventListener("click", function () {
       let username = document.getElementById("login-username").value.trim();
       let password = document.getElementById("login-password").value.trim();
       if (!username || !password) {
@@ -402,12 +631,35 @@
       app.connect();
       window.mqttApp = app;
     });
-    document.getElementById("logout-btn").addEventListener("click", function() {
+    document.getElementById("logout-btn").addEventListener("click", function () {
       localStorage.removeItem("mqtt_username");
       localStorage.removeItem("mqtt_password");
       location.reload();
     });
+
+    document.getElementById('ota-start-btn')
+      .addEventListener('click', async () => {
+        console.log("clicked ota");
+        const devs = Array.from(
+          document.querySelectorAll('#ota-device-list input:checked')
+        ).map(i => i.value);
+        const file = document.getElementById('ota-file').files[0];
+        if (!file) { alert('Wybierz .bin'); return; }
+        const buf = await file.arrayBuffer();
+        const ver = +document.getElementById('ota-fw-version').value;
+
+        // clear ota statuses
+        const container = document.getElementById('ota-status-container');
+        container.innerHTML = '';
+
+        const lg = document.getElementById('ota-log');
+        lg.textContent = '';
+
+        window.otaProt.start(devs, buf, ver);
+      });
+
     window.onload = initApp;
   </script>
 </body>
+
 </html>
